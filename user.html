@@ -10,21 +10,53 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+        integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+        crossorigin="anonymous" />
+
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/user.css">
 
     <title>Student Page</title>
 </head>
 
 <body>
-    <h1>This is the Student page</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title" id="title">Question Text</h5>
+            <ul>
+                <li>
+                    <input type="radio" name="answer" id="1" class="answer">
+                    <label for="1" id="1_text">Option</label>
+                </li>
 
+                <li>
+                    <input type="radio" name="answer" id="2" class="answer">
+                    <label for="2" id="2_text">Option</label>
+                </li>
+
+                <li>
+                    <input type="radio" name="answer" id="3" class="answer">
+                    <label for="3" id="3_text">Option</label>
+                </li>
+
+                <li>
+                    <input type="radio" name="answer" id="4" class="answer">
+                    <label for="4" id="4_text">Option</label>
+                </li>
+            </ul>
+            <div class="group">
+                <button id="prev" class="btn-warning"><em class="fas fa-step-backward"></em></button>
+                <button id="next" class="btn-warning"><em class="fas fa-step-forward"></em></button>
+            </div>
+        </div>
+    </div>
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
         crossorigin="anonymous"></script>
 
-    <script src="js/app.js" type="module"></script>
 </body>
 
 </html>
