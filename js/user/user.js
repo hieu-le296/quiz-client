@@ -1,15 +1,21 @@
 import { client } from '../client.js';
 import { ui } from './ui.js';
 
-const API_URL = 'http://192.168.1.67:5000/api/questions';
+// Virtual Server to test API
+const API_URL = 'http://localhost:5000/api/questions';
 
-const nextBtn = document.querySelector('#next');
-const prevBtn = document.querySelector('#prev');
+const nextBtn = document.getElementById('next');
+const prevBtn = document.getElementById('prev');
+
+const answers = [];
 
 (async () => {
   const data = await client.get(API_URL);
 
   if (data) {
+    // Set the number of answers based on the length of the questions
+    answers.length = data.questions.length;
+
     ui.showQuestion(data.questions);
 
     nextBtn.addEventListener('click', () => goNextQuestion(data.questions));
@@ -23,19 +29,71 @@ const prevBtn = document.querySelector('#prev');
 function goNextQuestion(questions) {
   try {
     if (questions) {
-      ui.showNextQuestion(questions);
+      let currentQuestion = ui.getCurrentQuestionIndex();
+      let answer;
+
+      // Check if previous selected
+      if (ui.checkSelected()) {
+        answer = ui.getSelected();
+        answers[currentQuestion] = answer;
+      } else {
+        answer = answers[currentQuestion];
+      }
+
+      if (!isNaN(answer)) {
+        ui.showNextQuestion(questions);
+        currentQuestion = ui.getCurrentQuestionIndex();
+        answer = answers[currentQuestion];
+        ui.selectAnswer(answer);
+      } else {
+        answers[currentQuestion] = -1;
+        ui.showNextQuestion(questions);
+      }
     }
   } catch (error) {
     console.log(error);
+  }
+
+  const submitBtn = document.querySelector('#submit');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', () => submitQuiz());
   }
 }
 
 function goPrevQuestion(questions) {
   try {
     if (questions) {
-      ui.showPrevQuestion(questions);
+      let currentQuestion = ui.getCurrentQuestionIndex();
+      let answer;
+      // Check if previous selected
+      if (ui.checkSelected()) {
+        answer = ui.getSelected();
+        answers[currentQuestion] = answer;
+      } else {
+        answer = answers[currentQuestion];
+      }
+
+      if (!isNaN(answer)) {
+        ui.showPrevQuestion(questions);
+        currentQuestion = ui.getCurrentQuestionIndex();
+        answer = answers[currentQuestion];
+        ui.selectAnswer(answer);
+      } else {
+        answers[currentQuestion] = -1;
+        ui.showPrevQuestion(questions);
+      }
     }
   } catch (error) {
     console.log(error);
+  }
+}
+
+function submitQuiz() {
+  let answer = ui.getSelected();
+  let currentQuestion = ui.getCurrentQuestionIndex();
+  answers[currentQuestion] = answer;
+
+  if (isNaN(answer)) {
+    answers[currentQuestion] = -1;
   }
 }

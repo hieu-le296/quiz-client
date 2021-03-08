@@ -17,7 +17,6 @@ class UI {
     if (this.currentQuestion === questions.length - 1) {
       this.showSubmitBtn();
     }
-
     const div = document.createElement('div');
     div.id = 'question-div';
     const ul = document.createElement('ul');
@@ -26,7 +25,9 @@ class UI {
 
     let title = '';
 
-    title += `<h5 class="card-title" id="title">${current.title}</h5>`;
+    title += `<h3 class="card-title" id="title">Question ${
+      this.currentQuestion + 1
+    }: ${current.title}</h3>`;
 
     div.innerHTML = title;
 
@@ -35,8 +36,8 @@ class UI {
     current.options.forEach((option, index) => {
       options = `
         <li>
-            <input type="radio" name="answer" id="${index}" class="answer">
-            <label for="1" id="${index}_text">${option}</label>
+            <input type="radio" name="answer" id="${index + 1}" class="answer">
+            <label for="${index + 1}" id="${index + 1}_text">${option}</label>
         </li>`;
 
       ul.innerHTML += options;
@@ -67,6 +68,46 @@ class UI {
       this.enableNextBtn();
       this.showQuestion(questions);
     }
+  }
+
+  checkSelected() {
+    const answerEls = document.querySelectorAll('.answer');
+    let check = false;
+
+    answerEls.forEach((answerEl) => {
+      if (answerEl.checked) {
+        check = true;
+      }
+    });
+    return check;
+  }
+
+  getSelected() {
+    const answerEls = document.querySelectorAll('.answer');
+
+    let answer;
+
+    answerEls.forEach((answerEl) => {
+      if (answerEl.checked) {
+        answer = answerEl.id;
+      }
+    });
+
+    return parseInt(answer);
+  }
+
+  getCurrentQuestionIndex() {
+    return this.currentQuestion;
+  }
+
+  selectAnswer(id) {
+    const answerEls = document.querySelectorAll('.answer');
+
+    answerEls.forEach((answerEl) => {
+      if (answerEl.id == id) {
+        answerEl.checked = true;
+      }
+    });
   }
 
   enablePrevBtn() {
