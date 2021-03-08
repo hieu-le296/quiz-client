@@ -1,5 +1,6 @@
 class UI {
   constructor() {
+    this.quiz = document.querySelector('#quiz');
     this.show = document.querySelector('#show');
     this.btnGroup = document.querySelector('.group');
     this.nextBtn = document.querySelector('#next');
@@ -18,7 +19,7 @@ class UI {
       this.showSubmitBtn();
     }
     const div = document.createElement('div');
-    div.id = 'question-div';
+    div.className = 'question-div';
     const ul = document.createElement('ul');
 
     let current = questions[this.currentQuestion];
@@ -102,12 +103,92 @@ class UI {
 
   selectAnswer(id) {
     const answerEls = document.querySelectorAll('.answer');
-
+    if (id) {
+      id = id.toString();
+    }
     answerEls.forEach((answerEl) => {
-      if (answerEl.id == id) {
+      if (answerEl.id === id) {
         answerEl.checked = true;
       }
     });
+  }
+
+  showScore(message) {
+    this.clearDiv();
+
+    this.show.innerHTML = `<h1 class="text-center text-info">${message}</h1>`;
+  }
+
+  showAllQuestions(questions, answers, correctAnswers) {
+    questions.forEach((question, number) => {
+      const card = document.createElement('div');
+      card.className = 'card mt-3 mb-3';
+      const card_body = document.createElement('div');
+      card_body.className = 'card-body';
+
+      card.appendChild(card_body);
+
+      const div = document.createElement('div');
+      div.id = `question_${number + 1}`;
+      const ul = document.createElement('ul');
+
+      let title = '';
+
+      title += `<h3 class="card-title" id="title">Question ${number + 1} : ${
+        question.title
+      }</h3>`;
+
+      div.innerHTML = title;
+
+      let options = '';
+
+      question.options.forEach((option, index) => {
+        options = `
+          <li>
+              <label class="answer" id="${index + 1}">${option}</label>
+          </li>
+          `;
+
+        ul.innerHTML += options;
+      });
+
+      div.appendChild(ul);
+
+      card_body.appendChild(div);
+
+      this.quiz.appendChild(card);
+    });
+  }
+
+  showAnswers(answers, correctAnswers) {
+    let i, div, answerEls, id;
+    for (i = 0; i < answers.length; i++) {
+      div = document.getElementById(`question_${i + 1}`);
+
+      answerEls = div.childNodes[1].querySelectorAll('.answer');
+
+      id = answers[i];
+
+      answerEls.forEach((answerEl) => {
+        if (answerEl.id == id) {
+          answerEl.style.color = 'red';
+        }
+      });
+    }
+
+    for (i = 0; i < correctAnswers.length; i++) {
+      div = document.getElementById(`question_${i + 1}`);
+
+      answerEls = div.childNodes[1].querySelectorAll('.answer');
+
+      id = correctAnswers[i];
+
+      answerEls.forEach((answerEl) => {
+        if (answerEl.id == id) {
+          answerEl.style.color = 'green';
+        }
+      });
+    }
   }
 
   enablePrevBtn() {
@@ -133,13 +214,42 @@ class UI {
     const submitBtn = document.createElement('button');
     submitBtn.textContent = 'Submit';
     submitBtn.id = 'submit';
-    submitBtn.className = 'btn-warning';
 
     this.prevBtn.insertAdjacentElement('afterend', submitBtn);
   }
 
+  showAlert(message, className) {
+    // Clear any previous alert
+    this.clearAlert();
+
+    const div = document.createElement('div');
+    // Add classes
+    div.className = className;
+    // Add text
+    div.appendChild(document.createTextNode(message));
+
+    // Get parent
+    const card = document.querySelector('.card');
+
+    //  Insert alert div
+    card.insertBefore(div, this.show);
+
+    // Timeout
+    setTimeout(() => {
+      this.clearAlert();
+    }, 2000);
+  }
+
+  // Clear Alert
+  clearAlert() {
+    const currentAlert = document.querySelector('.alert');
+    if (currentAlert) {
+      currentAlert.remove();
+    }
+  }
+
   clearDiv() {
-    document.querySelector('#question-div').remove();
+    document.querySelector('.question-div').remove();
   }
 }
 

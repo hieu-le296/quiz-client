@@ -10,7 +10,7 @@ const prevBtn = document.getElementById('prev');
 const answers = [];
 
 (async () => {
-  const data = await client.get(API_URL);
+  const data = await client.get(`${API_URL}`);
 
   if (data) {
     // Set the number of answers based on the length of the questions
@@ -56,7 +56,7 @@ function goNextQuestion(questions) {
 
   const submitBtn = document.querySelector('#submit');
   if (submitBtn) {
-    submitBtn.addEventListener('click', () => submitQuiz());
+    submitBtn.addEventListener('click', () => submitQuiz(questions));
   }
 }
 
@@ -88,7 +88,7 @@ function goPrevQuestion(questions) {
   }
 }
 
-function submitQuiz() {
+async function submitQuiz(questions) {
   let answer = ui.getSelected();
   let currentQuestion = ui.getCurrentQuestionIndex();
   answers[currentQuestion] = answer;
@@ -96,4 +96,19 @@ function submitQuiz() {
   if (isNaN(answer)) {
     answers[currentQuestion] = -1;
   }
+  const answerObj = { answers };
+
+  // Check the answer with server
+  const results = await client.post(`${API_URL}`, answerObj);
+
+  const message = results.message;
+
+  const answerString = results.correctAnswer;
+
+  const correctAnswers = answerString.split(',').map(Number);
+
+  ui.showScore(message);
+
+  ui.showAllQuestions(questions, answers, correctAnswers);
+  ui.showAnswers(answers, correctAnswers);
 }
