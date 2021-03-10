@@ -39,7 +39,7 @@ button:hover {
   background-color: #844db8;
 }
 
-#show input[type='radio'] {
+#quiz input[type='radio'] {
   display: none;
 }
 
