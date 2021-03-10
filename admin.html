@@ -10,13 +10,114 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+        integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+        crossorigin="anonymous" />
+
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/admin.css">
 
     <title>Admin Page</title>
 </head>
 
 <body>
-    <h1>This is the Admin page</h1>
+
+    <div class="container">
+        <button id="addBtn" class="float">
+            <em class="fas fa-plus my-float"></em>
+        </button>
+
+        <div class="row">
+            <div id="admin-div">
+                <div class="box">
+                    <div class="box-body-admin">
+                        <h1 class="box-title">Admin Panel</h1>
+                    </div>
+                </div>
+            </div>
+            <div id="quiz">
+                <div class="box mt-3">
+                    <div class="box-body" id="show">
+                        <h2 class="box-title" id="question">Question Title</h2>
+                        <div class="text-align-center">
+                            <ul>
+                                <li>
+                                    <input type="radio" name="answer" id="r1_1" name="answer_1">
+                                    <label for="r1_1" id="1" class="question_1_option">Option 1</label>
+                                </li>
+
+                                <li>
+                                    <input type="radio" name="answer" id="r1_2" name="answer_1">
+                                    <label for="r1_2" id="2" class="question_1_option">Option 2</label>
+                                </li>
+
+                                <li>
+                                    <input type="radio" name="answer" id="r1_3">
+                                    <label for="r1_3" id="3" class="question_1_option">Option 3</label>
+                                </li>
+
+                                <li>
+                                    <input type="radio" name="answer" id="r1_4" class="answer_1">
+                                    <label for="r1_4" id="4" class="question_1_option">Option 4</label>
+                                </li>
+                            </ul>
+                            <div class="float-end">
+                                <a href="#" class="card-link edit" data-id="${question.qid}">
+                                    <em class="far fa-edit"></em>
+                                </a>
+                                <a href="#" class="card-link delete" data-id="${question.qid}">
+                                    <em class="far fa-trash-alt"></em>
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add a question</h2>
+                    <div class="close"><em class="fas fa-times"></em></div>
+                </div>
+
+                <div class="modal-body">
+
+                    <textarea rows="1" class="form-control mb-3" placeholder="Enter a question"
+                        oninput="auto_height(this)"></textarea>
+
+                    <div class="input-group mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="r1" value="0" name="answer" checked>
+                            <textarea rows="1" class="form-check-label auto_height" placeholder=" Option 1"
+                                oninput="auto_height(this)"></textarea>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="r2" value="1" name="answer">
+                            <textarea rows="1" class="form-check-label auto_height" placeholder=" Option 2"
+                                oninput="auto_height(this)"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="align-content-center justify-content-center">
+                        <button id="submit">Submit</button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
 
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
@@ -24,7 +125,13 @@
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
         crossorigin="anonymous"></script>
 
-    <script src="js/app.js" type="module"></script>
+    <script>
+        function auto_height(elem) {  /* javascript */
+            elem.style.height = "1px";
+            elem.style.height = (elem.scrollHeight) + "px";
+        }
+    </script>
+    <script src="js/admin/admin.js" type="module"></script>
 </body>
 
 </html>
