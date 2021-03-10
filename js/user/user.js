@@ -10,19 +10,23 @@ const prevBtn = document.getElementById('prev');
 const answers = [];
 
 (async () => {
-  const data = await client.get(`${API_URL}`);
+  try {
+    const data = await client.get(`${API_URL}`);
 
-  if (data) {
-    // Set the number of answers based on the length of the questions
-    answers.length = data.questions.length;
+    if (data) {
+      // Set the number of answers based on the length of the questions
+      answers.length = data.questions.length;
 
-    ui.showQuestion(data.questions);
+      ui.showQuestion(data.questions);
 
-    nextBtn.addEventListener('click', () => goNextQuestion(data.questions));
+      nextBtn.addEventListener('click', () => goNextQuestion(data.questions));
 
-    prevBtn.addEventListener('click', () => goPrevQuestion(data.questions));
-  } else {
-    console.log('Something went wrong');
+      prevBtn.addEventListener('click', () => goPrevQuestion(data.questions));
+    } else {
+      console.log('Something went wrong');
+    }
+  } catch (error) {
+    ui.showAlert('Could not connect to quiz server', 'alert alert-danger');
   }
 })();
 
@@ -81,6 +85,11 @@ function goPrevQuestion(questions) {
       } else {
         answers[currentQuestion] = -1;
         ui.showPrevQuestion(questions);
+
+        // Get the previous selection
+        currentQuestion = ui.getCurrentQuestionIndex();
+        answer = answers[currentQuestion];
+        ui.selectAnswer(answer);
       }
     }
   } catch (error) {
