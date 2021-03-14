@@ -113,10 +113,9 @@ class UI {
     });
   }
 
-  showScore(message) {
+  showMessage(message, className) {
     this.clearDiv();
-
-    this.show.innerHTML = `<h1 class="text-center text-info">${message}</h1>`;
+    this.show.innerHTML = `<h2 class="text-center ${className}">${message}</h2>`;
   }
 
   showAllQuestions(questions, answers, correctAnswers) {
@@ -249,7 +248,10 @@ class UI {
   }
 
   clearDiv() {
-    document.querySelector('.question-div').remove();
+    const question_div = document.querySelector('.question-div');
+    if (question_div) {
+      question_div.remove();
+    }
   }
 }
 

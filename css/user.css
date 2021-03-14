@@ -5,6 +5,7 @@ body {
     rgba(238, 174, 202, 1) 0%,
     rgba(148, 187, 233, 1) 100%
   );
+
   font-family: 'Poppins', sans-serif;
   display: grid;
   align-items: center;
@@ -31,7 +32,7 @@ button {
   font-size: 1.2rem;
   font-family: inherit;
   padding: 1.3rem;
-  border-radius: 10px;
+  border-radius: 2rem;
   width: 7rem;
   height: auto;
   background-color: #8d55c2;
@@ -44,7 +45,11 @@ button:hover {
 }
 
 .card {
+  background-color: rgba(241, 240, 240, 0.609);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   width: 600px;
+  /* color: white; */
   box-shadow: 0 0 10px 2px rgba(100, 100, 100, 0.1);
   border-radius: 10px;
 }
@@ -58,6 +63,10 @@ button:hover {
   padding: 1rem;
   text-align: center;
   margin: 0;
+}
+
+.text-info {
+  color: #8d55c2 !important;
 }
 
 .group {
@@ -102,6 +111,9 @@ input[type='radio']:checked + * {
 }
 
 @media (max-width: 600px) {
+  .card {
+    width: auto;
+  }
   .group {
     display: flex;
     align-items: center;

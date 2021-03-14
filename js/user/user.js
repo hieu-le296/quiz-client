@@ -26,7 +26,7 @@ const answers = [];
       console.log('Something went wrong');
     }
   } catch (error) {
-    ui.showAlert('Could not connect to quiz server', 'alert alert-danger');
+    ui.showMessage('Could not connect to server', 'text-danger');
   }
 })();
 
@@ -116,7 +116,7 @@ async function submitQuiz(questions) {
 
   const correctAnswers = answerString.split(',').map(Number);
 
-  ui.showScore(message);
+  ui.showMessage(message, 'text-info');
 
   ui.showAllQuestions(questions, answers, correctAnswers);
   ui.showAnswers(answers, correctAnswers);
