@@ -21,6 +21,8 @@ class App {
     this.submitBtn = document.querySelector('#submit');
     // Get the <span> element that closes the modal
     this.span = document.getElementsByClassName('close')[0];
+
+    this.numberOfOptions = 2;
   }
 
   loadEvents() {
@@ -36,20 +38,32 @@ class App {
 
   openModal() {
     this.modal = document.querySelector('#myModal');
-
     this.modal.style.display = 'block';
     this.addBtn.style.zIndex = -1;
+    ui.showModal();
+
+    const addOptionBtn = document.querySelector('#add-option');
+    if (addOptionBtn) {
+      addOptionBtn.addEventListener('click', () => this.addOptions());
+    }
   }
 
   closeModal() {
     this.modal.style.display = 'none';
+    ui.clearModal();
     this.addBtn.style.zIndex = 4;
   }
 
   closeModalByIcon(e) {
     if (e.target == this.modal) {
       this.closeModal();
+      ui.clearModal();
     }
+  }
+
+  addOptions() {
+    this.numberOfOptions++;
+    ui.addOption(this.numberOfOptions);
   }
 
   addQuestion() {

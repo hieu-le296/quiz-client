@@ -2,7 +2,69 @@ class UI {
   constructor() {
     this.quiz = document.querySelector('#quiz');
     this.show = document.querySelector('#show');
+    this.modalBody = document.querySelector('.modal-body');
+    this.submitDiv = document.querySelector('#submit-div');
     this.questionId = document.querySelector('#id');
+  }
+
+  showModal() {
+    const div = document.createElement('div');
+
+    div.id = 'question-div';
+
+    div.innerHTML = `
+    <textarea rows="1" class="form-control" placeholder="Enter a question"
+    oninput="auto_height(this)"></textarea>
+
+    <div class="input-group">
+        <div class="mb-3 me-3 mt-3">
+            <span class="input-group-text">
+                <input class="form-check-input" type="radio" id="r1" value="1" name="answer" checked>
+            </span>
+            <textarea rows="1" class="form-control auto_height" placeholder=" Option 1"
+                oninput="auto_height(this)"></textarea>
+        </div>
+
+        <div class="mb-3 me-3 mt-3">
+            <span class="input-group-text">
+                <input class="form-check-input" type="radio" id="r2" value="2" name="answer">
+            </span>
+            <textarea rows="1" class="form-control auto_height" placeholder=" Option 2"
+                oninput="auto_height(this)"></textarea>
+        </div>
+        <a class="input-group-text mt-3" id="add-option" href="#"><em class="fas fa-plus"></em></a>
+    </div>
+    `;
+
+    this.modalBody.insertBefore(div, this.submitDiv);
+  }
+
+  addOption(numberOfOptions) {
+    const div = document.createElement('div');
+
+    div.className = 'mb-3 me-3 mt-3';
+
+    div.innerHTML = `
+    <span class="input-group-text">
+      <input class="form-check-input" type="radio" id="r${numberOfOptions}" value="${numberOfOptions}" name="answer">
+    </span>
+    <textarea rows="1" class="form-control auto_height" placeholder=" Option ${numberOfOptions}" oninput="auto_height(this)"></textarea> 
+    <a href="#" class="float-end text-danger mt-3 delete"><em class="far fa-trash-alt"></em></a>
+    `;
+
+    // Get the input group
+    const inputGroup = document.querySelector('.input-group');
+
+    // Get the plus icon
+    const addOptionBtn = document.querySelector('#add-option');
+
+    // Add the option before the plus icon
+    inputGroup.insertBefore(div, addOptionBtn);
+  }
+
+  clearModal() {
+    const questionDiv = document.querySelector('#question-div');
+    questionDiv.remove();
   }
 
   showAllQuestions(questions) {
