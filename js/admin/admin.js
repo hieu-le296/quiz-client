@@ -34,6 +34,11 @@ class App {
     window.addEventListener('click', (e) => this.closeModalByIcon(e));
 
     this.submitBtn.addEventListener('click', () => this.addQuestion());
+
+    // Delete a question by icon
+    document
+      .querySelector('#quiz')
+      .addEventListener('click', (e) => this.deleteQuestionByIcon(e));
   }
 
   openModal() {
@@ -97,6 +102,25 @@ class App {
         'Could not connect to server!',
         'mt-3 alert alert-danger'
       );
+    }
+  }
+
+  async deleteQuestionByIcon(e) {
+    e.preventDefault();
+    if (e.target.parentElement.classList.contains('delete')) {
+      // Get the id of the question
+      const id = parseInt(e.target.parentElement.dataset.id);
+      if (confirm('Are you sure')) {
+        try {
+          const result = await client.delete(`${API_URL}/${id}`);
+          if (result.success) {
+            ui.showAlert(result.message, 'alert alert-success');
+            new Questions();
+          }
+        } catch (error) {
+          ui.showAlert('Could not connect to server', 'alert alert-danger');
+        }
+      }
     }
   }
 }
