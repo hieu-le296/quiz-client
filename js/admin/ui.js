@@ -13,7 +13,7 @@ class UI {
     div.id = 'question-div';
 
     div.innerHTML = `
-    <textarea rows="1" class="form-control" placeholder="Enter a question"
+    <textarea rows="1" class="form-control" id='title' placeholder="Enter a question"
     oninput="auto_height(this)"></textarea>
 
     <div class="input-group">
@@ -21,7 +21,7 @@ class UI {
             <span class="input-group-text">
                 <input class="form-check-input" type="radio" id="r1" value="1" name="answer" checked>
             </span>
-            <textarea rows="1" class="form-control auto_height" placeholder=" Option 1"
+            <textarea rows="1" class="form-control auto_height options" placeholder=" Option 1"
                 oninput="auto_height(this)"></textarea>
         </div>
 
@@ -29,7 +29,7 @@ class UI {
             <span class="input-group-text">
                 <input class="form-check-input" type="radio" id="r2" value="2" name="answer">
             </span>
-            <textarea rows="1" class="form-control auto_height" placeholder=" Option 2"
+            <textarea rows="1" class="form-control auto_height options" placeholder=" Option 2"
                 oninput="auto_height(this)"></textarea>
         </div>
         <a class="input-group-text mt-3" id="add-option" href="#"><em class="fas fa-plus"></em></a>
@@ -48,7 +48,7 @@ class UI {
     <span class="input-group-text">
       <input class="form-check-input" type="radio" id="r${numberOfOptions}" value="${numberOfOptions}" name="answer">
     </span>
-    <textarea rows="1" class="form-control auto_height" placeholder=" Option ${numberOfOptions}" oninput="auto_height(this)"></textarea> 
+    <textarea rows="1" class="form-control auto_height options" placeholder=" Option ${numberOfOptions}" oninput="auto_height(this)"></textarea> 
     <a href="#" class="float-end text-danger mt-3 delete"><em class="far fa-trash-alt"></em></a>
     `;
 
@@ -64,10 +64,15 @@ class UI {
 
   clearModal() {
     const questionDiv = document.querySelector('#question-div');
-    questionDiv.remove();
+    if (questionDiv) {
+      questionDiv.remove();
+    }
   }
 
   showAllQuestions(questions) {
+    // Clear any previous questions
+    this.clearScreen();
+
     questions.forEach((question, counter) => {
       // Create a box
       const box = document.createElement('div');
@@ -81,17 +86,20 @@ class UI {
       title.className = 'box-title';
       title.textContent = `${question.title}`;
 
-      // Create ul
+      // // Create ul
       const ul = document.createElement('ul');
+      ul.className = 'list-group list-group-horizontal';
       let options = '';
 
       question.options.forEach((option, index) => {
         options = `
-        <li>
+        <li class="list-group-item">
           <input type="radio" name="answer_${counter + 1}" class="answer_${
           counter + 1
         }_${index + 1}">
-          <label for="r${counter + 1}_${index + 1}">${option}</label>
+          <label class="option-content" for="r${counter + 1}_${
+          index + 1
+        }">${option}</label>
         </li>
         `;
         ul.innerHTML += options;
@@ -136,6 +144,71 @@ class UI {
         }
       });
     });
+  }
+
+  clearScreen() {
+    while (this.quiz.firstChild) {
+      this.quiz.removeChild(this.quiz.firstChild);
+    }
+  }
+
+  showAlert(message, className) {
+    // Clear any previous alert
+    this.clearAlert();
+
+    const div = document.createElement('div');
+    // Add classes
+    div.className = className;
+    div.role = 'alert';
+    // Add text
+    div.appendChild(document.createTextNode(message));
+
+    // get admin div
+    const admin_div = document.querySelector('.box-body-admin');
+
+    admin_div.appendChild(div);
+
+    // Timeout
+    setTimeout(() => {
+      this.clearAlert();
+    }, 3000);
+  }
+
+  showModalAlert(messages, className) {
+    // Clear any previous alert
+    this.clearAlert();
+
+    const div = document.createElement('div');
+    // Add classes
+    div.className = className;
+    div.role = 'alert';
+    if (typeof messages === 'string' || messages instanceof String) {
+      div.innerHTML += `<p>${messages}.</p>`;
+    } else {
+      // Add text
+      let newArr = new Set(messages);
+      for (let message of newArr.values()) {
+        div.innerHTML += `<p>${message}.</p>`;
+      }
+    }
+
+    // get question div
+    const question_div = document.querySelector('#question-div');
+
+    this.modalBody.insertBefore(div, question_div);
+
+    // Timeout
+    setTimeout(() => {
+      this.clearAlert();
+    }, 3000);
+  }
+
+  // Clear Alert
+  clearAlert() {
+    const currentAlert = document.querySelector('.alert');
+    if (currentAlert) {
+      currentAlert.remove();
+    }
   }
 }
 

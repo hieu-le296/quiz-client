@@ -66,8 +66,38 @@ class App {
     ui.addOption(this.numberOfOptions);
   }
 
-  addQuestion() {
-    console.log(this.addBtn);
+  async addQuestion() {
+    const title = document.querySelector('#title').value;
+
+    const optionNodes = document.querySelectorAll('.options');
+
+    const options = [];
+
+    optionNodes.forEach((node) => {
+      options.push(node.value);
+    });
+
+    const optionNumber = document.querySelector('input[name="answer"]:checked')
+      .value;
+
+    const question = { title, options, optionNumber };
+
+    try {
+      const addQuestion = await client.post(`${API_URL}`, question);
+
+      if (addQuestion.success) {
+        this.closeModal();
+        ui.showAlert(addQuestion.message, 'mt-3 alert alert-success');
+        new Questions();
+      } else {
+        ui.showModalAlert(addQuestion.message, 'mt-3 alert alert-danger');
+      }
+    } catch (error) {
+      ui.showModalAlert(
+        'Could not connect to server!',
+        'mt-3 alert alert-danger'
+      );
+    }
   }
 }
 
