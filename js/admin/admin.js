@@ -8,7 +8,9 @@ class Questions {
     client
       .get(`${API_URL}`)
       .then((data) => ui.showAllQuestions(data.questions))
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        ui.showAlert('Could not connect to server', 'alert alert-danger')
+      );
   }
 }
 
@@ -18,11 +20,13 @@ class App {
     this.questionId = document.querySelector('#id');
     this.modal = document.querySelector('#myModal');
     this.addBtn = document.querySelector('#addBtn');
-    this.submitBtn = document.querySelector('#submit');
+    this.modalBtn = document.querySelector('.modal-button');
     // Get the <span> element that closes the modal
     this.span = document.getElementsByClassName('close')[0];
 
     this.numberOfOptions = 2;
+
+    this.numberOfOptionsOnUpdate = 0;
   }
 
   loadEvents() {
@@ -33,7 +37,13 @@ class App {
     // When the user clicks anywhere outside of the modal, close it
     window.addEventListener('click', (e) => this.closeModalByIcon(e));
 
-    this.submitBtn.addEventListener('click', () => this.addQuestion());
+    if (this.modalBtn.id === 'create') {
+      this.modalBtn.addEventListener('click', () => this.addQuestion());
+    }
+    // Edit a question by icon
+    document
+      .querySelector('#quiz')
+      .addEventListener('click', (e) => this.showEditQuestion(e));
 
     // Delete a question by icon
     document
@@ -42,20 +52,21 @@ class App {
   }
 
   openModal() {
-    this.modal = document.querySelector('#myModal');
     this.modal.style.display = 'block';
     this.addBtn.style.zIndex = -1;
     ui.showModal();
 
-    const addOptionBtn = document.querySelector('#add-option');
-    if (addOptionBtn) {
-      addOptionBtn.addEventListener('click', () => this.addOptions());
-    }
+    document
+      .querySelector('.input-group')
+      .addEventListener('click', (e) => this.handleEventOnModal(e, 'add'));
   }
 
   closeModal() {
     this.modal.style.display = 'none';
     ui.clearModal();
+    this.numberOfOptions = 2;
+    this.numberOfOptionsOnUpdate = 0;
+
     this.addBtn.style.zIndex = 4;
   }
 
@@ -66,9 +77,33 @@ class App {
     }
   }
 
-  addOptions() {
-    this.numberOfOptions++;
-    ui.addOption(this.numberOfOptions);
+  handleEventOnModal(e, type) {
+    if (e.target.parentElement.classList.contains('add-option')) {
+      this.addOptions(type);
+    }
+
+    if (e.target.parentElement.classList.contains('delete')) {
+      this.removeOptions(e, type);
+    }
+
+    e.stopPropagation();
+  }
+
+  addOptions(type) {
+    if (type === 'add') {
+      this.numberOfOptions++;
+      ui.addOption(this.numberOfOptions);
+    } else if (type === 'edit') {
+      this.numberOfOptionsOnUpdate++;
+      ui.addOption(this.numberOfOptionsOnUpdate);
+    }
+  }
+
+  removeOptions(e, type) {
+    if (type === 'add') this.numberOfOptions--;
+    else if (type === 'edit') this.numberOfOptionsOnUpdate--;
+
+    ui.removeOption(e.target.parentElement.parentElement);
   }
 
   async addQuestion() {
@@ -102,6 +137,29 @@ class App {
         'Could not connect to server!',
         'mt-3 alert alert-danger'
       );
+    }
+  }
+
+  async showEditQuestion(e) {
+    e.preventDefault();
+
+    if (e.target.parentElement.classList.contains('edit')) {
+      const id = parseInt(e.target.parentElement.dataset.id);
+      const data = await client.get(`${API_URL}/${id}`);
+
+      this.modal.style.display = 'block';
+      this.addBtn.style.zIndex = -1;
+
+      ui.showUpdateModal(data.question[0], id);
+
+      // Set the number of options on update to add/remove the option dynamically
+      this.numberOfOptionsOnUpdate = data.question[0].optionIDs.length;
+
+      document
+        .querySelector('.input-group')
+        .addEventListener('click', (event) =>
+          this.handleEventOnModal(event, 'edit')
+        );
     }
   }
 

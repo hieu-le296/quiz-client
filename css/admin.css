@@ -19,6 +19,10 @@ ul li {
   margin: 1rem 0;
 }
 
+a {
+  text-decoration: none;
+}
+
 button {
   font-size: 1.2rem;
   font-family: inherit;
@@ -107,7 +111,7 @@ button:hover {
   margin: 2rem 0 2rem 0;
 }
 
-#submit {
+.modal-button {
   float: right;
 }
 
@@ -128,7 +132,6 @@ button:hover {
 .auto_height {
   width: 100%;
 }
-
 
 @media (max-width: 600px) {
   .group {
@@ -284,4 +287,3 @@ textarea {
     opacity: 1;
   }
 }
-
