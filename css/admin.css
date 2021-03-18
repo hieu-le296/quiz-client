@@ -23,6 +23,14 @@ a {
   text-decoration: none;
 }
 
+#loading {
+  display: none;
+}
+
+img {
+  background: none;
+}
+
 button {
   font-size: 1.2rem;
   font-family: inherit;

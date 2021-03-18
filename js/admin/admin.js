@@ -5,17 +5,23 @@ const API_URL = 'https://quizisfun.tk/api/admin/questions';
 
 class Questions {
   constructor() {
+    this.loading = document.getElementById('loading');
     client
       .get(`${API_URL}`)
       .then((data) => ui.showAllQuestions(data.questions))
-      .catch((err) =>
+      .catch((err) => {
         ui.showAlert('Could not connect to server', 'alert alert-danger')
+        this.loading.style.display = 'block';
+      }
       );
   }
 }
 
 class App {
   constructor() {
+    this.loading = document.getElementById('loading');
+    this.loading.style.display = 'none';
+
     new Questions();
     this.questionId = document.querySelector('#id');
     this.modal = document.querySelector('#myModal');
@@ -123,6 +129,7 @@ class App {
             'Could not connect to server',
             'alert alert-danger'
           );
+          this.loading.style.display = 'block';
         }
       }
     }
@@ -158,6 +165,7 @@ class App {
         'Could not connect to server!',
         'mt-3 alert alert-danger'
       );
+      this.loading.style.display = 'block';
     }
   }
 
@@ -213,6 +221,7 @@ class App {
     } catch (error) {
       ui.showAlert('Could not connect to server', 'alert alert-danger');
       this.closeModal();
+      this.loading.style.display = 'block';
     }
   }
 
@@ -221,7 +230,7 @@ class App {
     if (e.target.parentElement.classList.contains('delete')) {
       // Get the id of the question
       const id = parseInt(e.target.parentElement.dataset.id);
-      if (confirm('Are you sure you want to delete this option?')) {
+      if (confirm('Are you sure you want to delete this question?')) {
         try {
           const result = await client.delete(`${API_URL}/${id}`);
           if (result.success) {
@@ -230,11 +239,20 @@ class App {
           }
         } catch (error) {
           ui.showAlert('Could not connect to server', 'alert alert-danger');
+          this.loading.style.display = 'block';
         }
       }
     }
   }
 }
 
-const app = new App();
-app.loadEvents();
+
+const loading = document.getElementById('loading');
+
+loading.style.display = 'block';
+
+setTimeout(() => {
+  const app = new App();
+  app.loadEvents();
+
+}, 2000)

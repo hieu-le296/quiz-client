@@ -114,6 +114,7 @@ class UI {
   }
 
   showMessage(message, className) {
+    this.quiz.style.display = 'block';
     this.clearDiv();
     this.show.innerHTML = `
     <div>

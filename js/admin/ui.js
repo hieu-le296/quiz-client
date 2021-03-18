@@ -201,7 +201,7 @@ class UI {
         <a href="#" class="card-link edit" data-id="${question.questionID}">
             <em class="far fa-edit"></em>
         </a>
-        <a href="#" class="card-link delete" data-id="${question.questionID}">
+        <a href="#" class="card-link text-danger delete" data-id="${question.questionID}">
             <em class="far fa-trash-alt"></em>
         </a>
       `;

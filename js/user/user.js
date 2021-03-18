@@ -4,15 +4,26 @@ import { ui } from './ui.js';
 // Virtual Server to test API
 const API_URL = 'https://quizisfun.tk/api/questions';
 
+const quiz = document.getElementById('quiz');
 const nextBtn = document.getElementById('next');
 const prevBtn = document.getElementById('prev');
+const loading = document.getElementById('loading');
+
 
 const answers = [];
 
-(async () => {
+
+
+loading.style.display = 'block';
+quiz.style.display = 'none';
+
+const app = async () => {
   try {
     const data = await client.get(`${API_URL}`);
 
+    loading.style.display = 'none';
+    ui.quiz.style.display = 'block';
+    
     if (data) {
       // Set the number of answers based on the length of the questions
       answers.length = data.questions.length;
@@ -27,8 +38,9 @@ const answers = [];
     }
   } catch (error) {
     ui.showMessage('Could not connect to server', 'text-danger');
+    loading.style.display = 'block';
   }
-})();
+};
 
 function goNextQuestion(questions) {
   try {
@@ -117,9 +129,22 @@ async function submitQuiz(questions) {
 
     const correctAnswers = answerString.split(',').map(Number);
 
-    ui.showMessage(message, 'text-info');
+    loading.style.display = 'block';
+    quiz.style.display = 'none';
 
-    ui.showAllQuestions(questions, answers, correctAnswers);
-    ui.showAnswers(answers, correctAnswers);
+    setTimeout(() => {
+      ui.showMessage(message, 'text-info');
+
+      ui.showAllQuestions(questions, answers, correctAnswers);
+      ui.showAnswers(answers, correctAnswers);
+
+      loading.style.display = 'none';
+    }, 2000)
+
+   
   }
 }
+
+setTimeout(() => {
+ app();
+}, 2000)
