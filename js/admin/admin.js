@@ -20,7 +20,8 @@ class App {
     this.questionId = document.querySelector('#id');
     this.modal = document.querySelector('#myModal');
     this.addBtn = document.querySelector('#addBtn');
-    this.modalBtn = document.querySelector('.modal-button');
+    this.createBtn = document.querySelector('#create');
+    this.updateBtn = document.querySelector('#update');
     // Get the <span> element that closes the modal
     this.span = document.getElementsByClassName('close')[0];
 
@@ -37,9 +38,6 @@ class App {
     // When the user clicks anywhere outside of the modal, close it
     window.addEventListener('click', (e) => this.closeModalByIcon(e));
 
-    if (this.modalBtn.id === 'create') {
-      this.modalBtn.addEventListener('click', () => this.addQuestion());
-    }
     // Edit a question by icon
     document
       .querySelector('#quiz')
@@ -49,6 +47,10 @@ class App {
     document
       .querySelector('#quiz')
       .addEventListener('click', (e) => this.deleteQuestionByIcon(e));
+
+    this.createBtn.addEventListener('click', () => this.addQuestion());
+
+    this.updateBtn.addEventListener('click', () => this.updateQuestion());
   }
 
   openModal() {
@@ -68,6 +70,8 @@ class App {
     this.numberOfOptionsOnUpdate = 0;
 
     this.addBtn.style.zIndex = 4;
+
+    new Questions();
   }
 
   closeModalByIcon(e) {
@@ -99,11 +103,29 @@ class App {
     }
   }
 
-  removeOptions(e, type) {
-    if (type === 'add') this.numberOfOptions--;
-    else if (type === 'edit') this.numberOfOptionsOnUpdate--;
+  async removeOptions(e, type) {
+    if (type === 'add') {
+      ui.removeOption(e.target.parentElement.parentElement);
+      this.numberOfOptions--;
+    } else if (type === 'edit') {
+      if (confirm('Are you sure you want to delete this option?')) {
+        this.numberOfOptionsOnUpdate--;
 
-    ui.removeOption(e.target.parentElement.parentElement);
+        const optionTextArea = e.target.parentElement.previousElementSibling;
+        const optionID = optionTextArea.id;
+        try {
+          const result = await client.delete(`${API_URL}/options/${optionID}`);
+
+          ui.showModalAlert(result.message, 'alert alert-success');
+          ui.removeOption(e.target.parentElement.parentElement);
+        } catch (error) {
+          ui.showModalAlert(
+            'Could not connect to server',
+            'alert alert-danger'
+          );
+        }
+      }
+    }
   }
 
   async addQuestion() {
@@ -128,7 +150,6 @@ class App {
       if (addQuestion.success) {
         this.closeModal();
         ui.showAlert(addQuestion.message, 'mt-3 alert alert-success');
-        new Questions();
       } else {
         ui.showModalAlert(addQuestion.message, 'mt-3 alert alert-danger');
       }
@@ -163,12 +184,44 @@ class App {
     }
   }
 
+  async updateQuestion() {
+    const title = document.querySelector('#title').value;
+
+    const optionNodes = document.querySelectorAll('.options');
+
+    const options = [];
+    const optionIDs = [];
+
+    optionNodes.forEach((node) => {
+      options.push(node.value);
+      optionIDs.push(node.id);
+    });
+
+    const optionNumber = document.querySelector('input[name="answer"]:checked')
+      .value;
+
+    const question = { title, options, optionIDs, optionNumber };
+
+    const id = document.querySelector('#id').value;
+
+    try {
+      const result = await client.put(`${API_URL}/${id}`, question);
+
+      ui.showAlert(result.message, 'alert alert-success');
+      this.closeModal();
+      new Questions();
+    } catch (error) {
+      ui.showAlert('Could not connect to server', 'alert alert-danger');
+      this.closeModal();
+    }
+  }
+
   async deleteQuestionByIcon(e) {
     e.preventDefault();
     if (e.target.parentElement.classList.contains('delete')) {
       // Get the id of the question
       const id = parseInt(e.target.parentElement.dataset.id);
-      if (confirm('Are you sure')) {
+      if (confirm('Are you sure you want to delete this option?')) {
         try {
           const result = await client.delete(`${API_URL}/${id}`);
           if (result.success) {

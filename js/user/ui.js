@@ -115,10 +115,15 @@ class UI {
 
   showMessage(message, className) {
     this.clearDiv();
-    this.show.innerHTML = `<h2 class="text-center ${className}">${message}</h2>`;
+    this.show.innerHTML = `
+    <div>
+        <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Back to landing page" href="./index.html"><em class="fas fa-arrow-left"></em></a>
+    </div>
+    <h2 class="text-center ${className}">${message}</h2>
+    `;
   }
 
-  showAllQuestions(questions, answers, correctAnswers) {
+  showAllQuestions(questions) {
     questions.forEach((question, number) => {
       const card = document.createElement('div');
       card.className = 'card mt-3 mb-3';

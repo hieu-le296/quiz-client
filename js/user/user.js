@@ -98,26 +98,28 @@ function goPrevQuestion(questions) {
 }
 
 async function submitQuiz(questions) {
-  let answer = ui.getSelected();
-  let currentQuestion = ui.getCurrentQuestionIndex();
-  answers[currentQuestion] = answer;
+  if (confirm('Are you sure you want to submit the quiz?')) {
+    let answer = ui.getSelected();
+    let currentQuestion = ui.getCurrentQuestionIndex();
+    answers[currentQuestion] = answer;
 
-  if (isNaN(answer)) {
-    answers[currentQuestion] = -1;
+    if (isNaN(answer)) {
+      answers[currentQuestion] = -1;
+    }
+    const answerObj = { answers };
+
+    // Check the answer with server
+    const results = await client.post(`${API_URL}`, answerObj);
+
+    const message = results.message;
+
+    const answerString = results.correctAnswer;
+
+    const correctAnswers = answerString.split(',').map(Number);
+
+    ui.showMessage(message, 'text-info');
+
+    ui.showAllQuestions(questions, answers, correctAnswers);
+    ui.showAnswers(answers, correctAnswers);
   }
-  const answerObj = { answers };
-
-  // Check the answer with server
-  const results = await client.post(`${API_URL}`, answerObj);
-
-  const message = results.message;
-
-  const answerString = results.correctAnswer;
-
-  const correctAnswers = answerString.split(',').map(Number);
-
-  ui.showMessage(message, 'text-info');
-
-  ui.showAllQuestions(questions, answers, correctAnswers);
-  ui.showAnswers(answers, correctAnswers);
 }

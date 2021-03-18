@@ -4,7 +4,8 @@ class UI {
     this.show = document.querySelector('#show');
     this.modalTitle = document.querySelector('#modal-title');
     this.modalBody = document.querySelector('.modal-body');
-    this.modalBtn = document.querySelector('.modal-button');
+    this.createBtn = document.querySelector('#create');
+    this.updateBtn = document.querySelector('#update');
     this.submitDiv = document.querySelector('#submit-div');
     this.questionId = document.querySelector('#id');
   }
@@ -39,8 +40,8 @@ class UI {
         <a class="input-group-text mt-3 add-option" id="add-option" href="#"><em class="fas fa-plus"></em></a>
     </div>
     `;
-    this.modalBtn.id = 'create';
-    this.modalBtn.textContent = 'Submit';
+    this.updateBtn.style.display = 'none';
+    this.createBtn.style.display = 'block';
     this.modalBody.insertBefore(div, this.submitDiv);
   }
 
@@ -131,8 +132,8 @@ class UI {
 
     div.appendChild(inputGroup);
 
-    this.modalBtn.id = 'update';
-    this.modalBtn.textContent = 'Update';
+    this.createBtn.style.display = 'none';
+    this.updateBtn.style.display = 'block';
     this.modalBody.insertBefore(div, this.submitDiv);
 
     // check the answer from option number
