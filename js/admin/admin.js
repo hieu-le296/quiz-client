@@ -1,7 +1,7 @@
 import { client } from '../client.js';
 import { ui } from './ui.js';
 
-const API_URL = 'http://localhost:5000/api/admin/questions';
+const API_URL = 'https://quizisfun.tk/api/admin/questions';
 
 class Questions {
   constructor() {

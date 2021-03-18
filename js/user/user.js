@@ -2,7 +2,7 @@ import { client } from '../client.js';
 import { ui } from './ui.js';
 
 // Virtual Server to test API
-const API_URL = 'http://localhost:5000/api/questions';
+const API_URL = 'https://quizisfun.tk/api/questions';
 
 const nextBtn = document.getElementById('next');
 const prevBtn = document.getElementById('prev');
