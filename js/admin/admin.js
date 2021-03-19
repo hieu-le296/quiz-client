@@ -1,8 +1,7 @@
 import { client } from '../client.js';
 import { ui } from './ui.js';
 
-// const API_URL = 'https://quizisfun.tk/api/admin/questions';
-const API_URL = 'http://localhost:5600/api/admin/questions';
+const API_URL = 'https://quizisfun.tk/api/admin/questions';
 
 class Questions {
   constructor() {
@@ -11,7 +10,9 @@ class Questions {
       .get(`${API_URL}`)
       .then((data) => ui.showAllQuestions(data.questions))
       .catch((err) => {
-        ui.showAlert('Could not connect to server', 'alert alert-danger');
+        const title = document.querySelector('.box-title');
+        title.textContent = 'Could not connect to server';
+        title.style.color = 'red';
         this.loading.style.display = 'block';
       });
   }
@@ -24,6 +25,7 @@ class App {
 
     new Questions();
     this.modal = document.querySelector('#myModal');
+    this.instruction = document.querySelector('#instruction');
     this.addBtn = document.querySelector('#addBtn');
     this.createBtn = document.querySelector('#create');
     this.updateBtn = document.querySelector('#update');
@@ -42,6 +44,8 @@ class App {
     this.span.addEventListener('click', () => this.closeModal());
     // When the user clicks anywhere outside of the modal, close it
     window.addEventListener('click', (e) => this.closeModalByIcon(e));
+
+    this.instruction.addEventListener('click', () => this.openInstruction());
 
     // Set question status
     document
@@ -89,6 +93,12 @@ class App {
       this.closeModal();
       ui.clearModal();
     }
+  }
+
+  openInstruction() {
+    this.modal.style.display = 'block';
+    this.addBtn.style.zIndex = -1;
+    ui.showInstructions();
   }
 
   handleEventOnModal(e, type) {
@@ -290,4 +300,4 @@ loading.style.display = 'block';
 setTimeout(() => {
   const app = new App();
   app.loadEvents();
-}, 500);
+}, 2000);

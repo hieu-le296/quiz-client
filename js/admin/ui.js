@@ -10,6 +10,44 @@ class UI {
     this.questionId = document.querySelector('#id');
   }
 
+  showInstructions() {
+    const div = document.createElement('div');
+
+    div.id = 'question-div';
+
+    this.modalTitle.textContent = 'Instructions';
+
+    div.innerHTML = `
+    <div>
+      This instruction shows you how to use the functions of this page.
+    </div>
+    <hr>
+    <div>
+      <h4>Add a question: </h4>
+      Simply click on the floating button on the right corner. Fill in the question information in all textareas. The added question will be added to the database and dynamically populated.
+    </div>
+    <hr>
+    <div>
+      <h4>Edit: </h4>
+      Click on the update icon to edit the question. Once edited, the question will be updated in the database and dynamically shown.
+    </div>
+    <hr>
+    <div>
+      <h4>Delete: </h4>
+      Click on the remove icon or delete button to remove the question from the database.
+    </div>
+    <hr>
+    <div>
+      <h4>Set question status: </h4>
+      You can enable or disable the question. Once disabled, the question will not be shown in user page.
+    </div>
+
+    `;
+    this.updateBtn.style.display = 'none';
+    this.createBtn.style.display = 'none';
+    this.modalBody.appendChild(div);
+  }
+
   showModal() {
     const div = document.createElement('div');
 
