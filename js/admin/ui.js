@@ -169,6 +169,33 @@ class UI {
       const box_body = document.createElement('div');
       box_body.className = 'box-body';
 
+      // Create enable switch to toggle question visible to user
+      const enableQuiz = document.createElement('div');
+      enableQuiz.className = 'form-check form-switch float-end';
+      enableQuiz.dataset.id = question.questionID;
+
+      const checkbox = document.createElement('input');
+      checkbox.setAttribute('type', 'checkbox');
+      checkbox.id = `question_${counter + 1}`;
+      checkbox.className = 'form-check-input';
+
+      const labelCheckbox = document.createElement('label');
+      labelCheckbox.className = 'form-check-label';
+      labelCheckbox.htmlFor = `question_${counter + 1}`;
+
+      if (question.isEnabled == 1) {
+        checkbox.checked = true;
+        checkbox.value = 1;
+        labelCheckbox.textContent = 'Enabled';
+      } else {
+        checkbox.checked = false;
+        checkbox.value = 0;
+        labelCheckbox.textContent = 'Disabled';
+      }
+
+      enableQuiz.appendChild(checkbox);
+      enableQuiz.appendChild(labelCheckbox);
+
       // Create title
       const title = document.createElement('h2');
       title.className = 'box-title';
@@ -208,7 +235,8 @@ class UI {
 
       group_icon.innerHTML += a_tags;
 
-      // Add title, options to box_body
+      // Add title, enable question,  options to box_body
+      box_body.appendChild(enableQuiz);
       box_body.appendChild(title);
       box_body.appendChild(ul);
       box_body.appendChild(group_icon);

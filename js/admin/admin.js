@@ -1,7 +1,8 @@
 import { client } from '../client.js';
 import { ui } from './ui.js';
 
-const API_URL = 'https://quizisfun.tk/api/admin/questions';
+// const API_URL = 'https://quizisfun.tk/api/admin/questions';
+const API_URL = 'http://localhost:5600/api/admin/questions';
 
 class Questions {
   constructor() {
@@ -10,10 +11,9 @@ class Questions {
       .get(`${API_URL}`)
       .then((data) => ui.showAllQuestions(data.questions))
       .catch((err) => {
-        ui.showAlert('Could not connect to server', 'alert alert-danger')
+        ui.showAlert('Could not connect to server', 'alert alert-danger');
         this.loading.style.display = 'block';
-      }
-      );
+      });
   }
 }
 
@@ -23,7 +23,6 @@ class App {
     this.loading.style.display = 'none';
 
     new Questions();
-    this.questionId = document.querySelector('#id');
     this.modal = document.querySelector('#myModal');
     this.addBtn = document.querySelector('#addBtn');
     this.createBtn = document.querySelector('#create');
@@ -43,6 +42,11 @@ class App {
     this.span.addEventListener('click', () => this.closeModal());
     // When the user clicks anywhere outside of the modal, close it
     window.addEventListener('click', (e) => this.closeModalByIcon(e));
+
+    // Set question status
+    document
+      .querySelector('#quiz')
+      .addEventListener('click', (e) => this.setQuestionStatus(e));
 
     // Edit a question by icon
     document
@@ -169,9 +173,41 @@ class App {
     }
   }
 
-  async showEditQuestion(e) {
-    e.preventDefault();
+  async setQuestionStatus(e) {
+    e.stopPropagation();
 
+    if (e.target.parentElement.classList.contains('form-switch')) {
+      const checkbox = e.target.parentElement.childNodes[0];
+      const label = e.target.parentElement.childNodes[1];
+
+      if (checkbox.value == 0) {
+        checkbox.value = 1;
+        label.textContent = 'Enabled';
+        // new Questions();
+      } else if (checkbox.value == 1) {
+        checkbox.checkbox = false;
+        checkbox.value = 0;
+        label.textContent = 'Disabled';
+      }
+
+      const isEnabled = checkbox.value;
+
+      const obj = { isEnabled };
+
+      const id = e.target.parentElement.dataset.id;
+
+      try {
+        await client.put(`${API_URL}/status/${id}`, obj);
+        new Questions();
+      } catch (error) {
+        ui.showAlert('Could not connect to server', 'alert alert-danger');
+        this.closeModal();
+        this.loading.style.display = 'block';
+      }
+    }
+  }
+
+  async showEditQuestion(e) {
     if (e.target.parentElement.classList.contains('edit')) {
       const id = parseInt(e.target.parentElement.dataset.id);
       const data = await client.get(`${API_URL}/${id}`);
@@ -190,6 +226,7 @@ class App {
           this.handleEventOnModal(event, 'edit')
         );
     }
+    e.stopPropagation();
   }
 
   async updateQuestion() {
@@ -226,7 +263,6 @@ class App {
   }
 
   async deleteQuestionByIcon(e) {
-    e.preventDefault();
     if (e.target.parentElement.classList.contains('delete')) {
       // Get the id of the question
       const id = parseInt(e.target.parentElement.dataset.id);
@@ -243,9 +279,9 @@ class App {
         }
       }
     }
+    e.stopPropagation();
   }
 }
-
 
 const loading = document.getElementById('loading');
 
@@ -254,5 +290,4 @@ loading.style.display = 'block';
 setTimeout(() => {
   const app = new App();
   app.loadEvents();
-
-}, 2000)
+}, 500);

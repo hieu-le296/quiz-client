@@ -2,17 +2,15 @@ import { client } from '../client.js';
 import { ui } from './ui.js';
 
 // Virtual Server to test API
-const API_URL = 'https://quizisfun.tk/api/questions';
+// const API_URL = 'https://quizisfun.tk/api/questions';
+const API_URL = 'http://localhost:5600/api/questions';
 
 const quiz = document.getElementById('quiz');
 const nextBtn = document.getElementById('next');
 const prevBtn = document.getElementById('prev');
 const loading = document.getElementById('loading');
 
-
 const answers = [];
-
-
 
 loading.style.display = 'block';
 quiz.style.display = 'none';
@@ -23,7 +21,7 @@ const app = async () => {
 
     loading.style.display = 'none';
     ui.quiz.style.display = 'block';
-    
+
     if (data) {
       // Set the number of answers based on the length of the questions
       answers.length = data.questions.length;
@@ -139,12 +137,10 @@ async function submitQuiz(questions) {
       ui.showAnswers(answers, correctAnswers);
 
       loading.style.display = 'none';
-    }, 2000)
-
-   
+    }, 2000);
   }
 }
 
 setTimeout(() => {
- app();
-}, 2000)
+  app();
+}, 2000);
