@@ -7,6 +7,7 @@ body {
   );
 
   font-family: 'Poppins', sans-serif;
+  font-weight: lighter;
   display: grid;
   align-items: center;
   justify-content: center;
@@ -53,11 +54,10 @@ button:hover {
 }
 
 .card {
-  background-color: rgba(241, 240, 240, 0.609);
+  background-color: rgba(255, 255, 255, 0.609);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   width: 600px;
-  /* color: white; */
   box-shadow: 0 0 10px 2px rgba(100, 100, 100, 0.1);
   border-radius: 10px;
 }
@@ -67,10 +67,25 @@ button:hover {
 }
 
 .card-title {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   padding: 1rem;
-  text-align: center;
   margin: 0;
+}
+
+textarea {
+  border: none;
+  border-radius: 10px;
+  resize: none;
+  overflow: hidden;
+  height: auto;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: #986be0;
+  border: none;
+  border-radius: 10px;
+  color: white;
 }
 
 .text-info {

@@ -38,6 +38,11 @@ class UI {
     </div>
     <hr>
     <div>
+      <h4>Delete All: </h4>
+      A delete button is the trash icon appearing in the end of the page if there are more than 2 questions created.
+    </div>
+    <hr>
+    <div>
       <h4>Set question status: </h4>
       You can enable or disable the question. Once disabled, the question will not be shown in user page.
     </div>
@@ -108,6 +113,133 @@ class UI {
 
   removeOption(target) {
     target.remove();
+  }
+
+  showAllQuestions(questions) {
+    // Clear any previous questions
+    this.clearScreen();
+
+    if (questions.length == 0) {
+      this.showNoQuestionMessage();
+    } else {
+      const message = document.getElementById('no-question');
+      if (message) {
+        message.remove();
+      }
+      questions.forEach((question, counter) => {
+        // Create a box
+        const box = document.createElement('div');
+        box.className = 'box mt-3';
+
+        const box_body = document.createElement('div');
+        box_body.className = 'box-body';
+
+        // Question number
+        const questionNumber = document.createElement('h5');
+        questionNumber.className = 'float-start';
+        questionNumber.textContent = `Question ${counter + 1}:`;
+
+        // Create enable switch to toggle question visible to user
+        const enableQuiz = document.createElement('div');
+        enableQuiz.className = 'form-check form-switch float-end';
+        enableQuiz.dataset.id = question.questionID;
+
+        const checkbox = document.createElement('input');
+        checkbox.setAttribute('type', 'checkbox');
+        checkbox.id = `question_${counter + 1}`;
+        checkbox.className = 'form-check-input';
+
+        const labelCheckbox = document.createElement('label');
+        labelCheckbox.className = 'form-check-label';
+        labelCheckbox.htmlFor = `question_${counter + 1}`;
+
+        if (question.isEnabled == 1) {
+          checkbox.checked = true;
+          checkbox.value = 1;
+          labelCheckbox.textContent = 'Enabled';
+        } else {
+          checkbox.checked = false;
+          checkbox.value = 0;
+          labelCheckbox.textContent = 'Disabled';
+        }
+
+        enableQuiz.appendChild(checkbox);
+        enableQuiz.appendChild(labelCheckbox);
+
+        // Create title
+        const title = document.createElement('textarea');
+        title.className = 'textarea-title box-title form-control';
+        title.textContent = `${question.title}`;
+        title.setAttribute('readonly', true);
+
+        // // Create ul
+        const ul = document.createElement('ul');
+        ul.className = 'list-group';
+        let options = '';
+
+        question.options.forEach((option, index) => {
+          options = `
+        <li class="list-group-item">
+          <input type="radio" name="answer_${counter + 1}" class="answer_${
+            counter + 1
+          }_${index + 1}">
+          <label class="option-content" for="r${counter + 1}_${
+            index + 1
+          }">${option}</label>
+        </li>
+        `;
+          ul.innerHTML += options;
+        });
+
+        // Create group icons
+        const group_icon = document.createElement('div');
+        group_icon.className = 'float-end';
+
+        let a_tags = `
+        <a href="#" class="card-link edit" data-id="${question.questionID}">
+            <em class="far fa-edit"></em>
+        </a>
+        <a href="#" class="card-link text-danger delete" data-id="${question.questionID}">
+            <em class="far fa-trash-alt"></em>
+        </a>
+      `;
+
+        group_icon.innerHTML += a_tags;
+
+        // Add title, enable question,  options to box_body
+        box_body.appendChild(questionNumber);
+        box_body.appendChild(enableQuiz);
+        box_body.appendChild(title);
+        box_body.appendChild(ul);
+        box_body.appendChild(group_icon);
+
+        // Add box_body to the parent box
+        box.appendChild(box_body);
+
+        // Add box to quiz screen
+        this.quiz.appendChild(box);
+
+        // Add option IDs to options and check the answer from option number
+        question.optionIDs.forEach((val, index) => {
+          const radioBtn = document.querySelector(
+            `.answer_${counter + 1}_${index + 1}`
+          );
+
+          if (question.optionNumber == index + 1) {
+            radioBtn.checked = true;
+          }
+        });
+
+        const titles = document.querySelectorAll('.textarea-title');
+        titles.forEach((element) => {
+          element.style.height = element.scrollHeight + 'px';
+        });
+      });
+
+      if (this.quiz.childElementCount >= 2) {
+        this.addDeleteAllButton();
+      }
+    }
   }
 
   showUpdateModal(question, id) {
@@ -186,127 +318,15 @@ class UI {
         radioBtn.checked = true;
       }
     });
+
+    const titleText = document.getElementById('title');
+    titleText.style.height = titleText.scrollHeight + 'px';
   }
 
   clearModal() {
     const questionDiv = document.querySelector('#question-div');
     if (questionDiv) {
       questionDiv.remove();
-    }
-  }
-
-  showAllQuestions(questions) {
-    // Clear any previous questions
-    this.clearScreen();
-
-    if (questions.length == 0) {
-      this.showNoQuestionMessage();
-    } else {
-      const message = document.getElementById('no-question');
-      if (message) {
-        message.remove();
-      }
-      questions.forEach((question, counter) => {
-        // Create a box
-        const box = document.createElement('div');
-        box.className = 'box mt-3';
-
-        const box_body = document.createElement('div');
-        box_body.className = 'box-body';
-
-        // Create enable switch to toggle question visible to user
-        const enableQuiz = document.createElement('div');
-        enableQuiz.className = 'form-check form-switch float-end';
-        enableQuiz.dataset.id = question.questionID;
-
-        const checkbox = document.createElement('input');
-        checkbox.setAttribute('type', 'checkbox');
-        checkbox.id = `question_${counter + 1}`;
-        checkbox.className = 'form-check-input';
-
-        const labelCheckbox = document.createElement('label');
-        labelCheckbox.className = 'form-check-label';
-        labelCheckbox.htmlFor = `question_${counter + 1}`;
-
-        if (question.isEnabled == 1) {
-          checkbox.checked = true;
-          checkbox.value = 1;
-          labelCheckbox.textContent = 'Enabled';
-        } else {
-          checkbox.checked = false;
-          checkbox.value = 0;
-          labelCheckbox.textContent = 'Disabled';
-        }
-
-        enableQuiz.appendChild(checkbox);
-        enableQuiz.appendChild(labelCheckbox);
-
-        // Create title
-        const title = document.createElement('h2');
-        title.className = 'box-title';
-        title.textContent = `${question.title}`;
-
-        // // Create ul
-        const ul = document.createElement('ul');
-        ul.className = 'list-group list-group-horizontal';
-        let options = '';
-
-        question.options.forEach((option, index) => {
-          options = `
-        <li class="list-group-item">
-          <input type="radio" name="answer_${counter + 1}" class="answer_${
-            counter + 1
-          }_${index + 1}">
-          <label class="option-content" for="r${counter + 1}_${
-            index + 1
-          }">${option}</label>
-        </li>
-        `;
-          ul.innerHTML += options;
-        });
-
-        // Create group icons
-        const group_icon = document.createElement('div');
-        group_icon.className = 'float-end';
-
-        let a_tags = `
-        <a href="#" class="card-link edit" data-id="${question.questionID}">
-            <em class="far fa-edit"></em>
-        </a>
-        <a href="#" class="card-link text-danger delete" data-id="${question.questionID}">
-            <em class="far fa-trash-alt"></em>
-        </a>
-      `;
-
-        group_icon.innerHTML += a_tags;
-
-        // Add title, enable question,  options to box_body
-        box_body.appendChild(enableQuiz);
-        box_body.appendChild(title);
-        box_body.appendChild(ul);
-        box_body.appendChild(group_icon);
-
-        // Add box_body to the parent box
-        box.appendChild(box_body);
-
-        // Add box to quiz screen
-        this.quiz.appendChild(box);
-
-        // Add option IDs to options and check the answer from option number
-        question.optionIDs.forEach((val, index) => {
-          const radioBtn = document.querySelector(
-            `.answer_${counter + 1}_${index + 1}`
-          );
-
-          if (question.optionNumber == index + 1) {
-            radioBtn.checked = true;
-          }
-        });
-      });
-
-      if (this.quiz.childElementCount >= 2) {
-        this.addDeleteAllButton();
-      }
     }
   }
 

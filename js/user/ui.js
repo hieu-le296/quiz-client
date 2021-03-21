@@ -24,13 +24,18 @@ class UI {
 
     let current = questions[this.currentQuestion];
 
-    let title = '';
+    const questionNumber = document.createElement('h5');
+    questionNumber.className = 'float-start';
+    questionNumber.textContent = `Question ${this.currentQuestion + 1}:`;
 
-    title += `<h3 class="card-title" id="title">Question ${
-      this.currentQuestion + 1
-    }: ${current.title}</h3>`;
+    const title = document.createElement('textarea');
+    title.className = 'card-title form-control';
+    title.id = 'title';
+    title.setAttribute('readonly', true);
+    title.textContent = current.title;
 
-    div.innerHTML = title;
+    div.appendChild(questionNumber);
+    div.appendChild(title);
 
     let options = '';
 
@@ -47,6 +52,9 @@ class UI {
     div.appendChild(ul);
 
     this.show.insertBefore(div, this.btnGroup);
+
+    const titleText = document.getElementById('title');
+    titleText.style.height = titleText.scrollHeight + 'px';
   }
 
   setCurrentQuestion(currentQuestion) {
@@ -137,13 +145,18 @@ class UI {
       div.id = `question_${number + 1}`;
       const ul = document.createElement('ul');
 
-      let title = '';
+      const questionNumber = document.createElement('h5');
+      questionNumber.className = 'float-start';
+      questionNumber.textContent = `Question ${number + 1}:`;
 
-      title += `<h3 class="card-title" id="title">Question ${number + 1} : ${
-        question.title
-      }</h3>`;
+      const title = document.createElement('textarea');
+      title.className = 'card-title textarea-title form-control';
+      title.id = 'title';
+      title.setAttribute('readonly', true);
+      title.textContent = question.title;
 
-      div.innerHTML = title;
+      div.appendChild(questionNumber);
+      div.appendChild(title);
 
       let options = '';
 
@@ -163,6 +176,11 @@ class UI {
 
       this.quiz.appendChild(card);
     });
+
+    const titles = document.querySelectorAll('.textarea-title');
+    titles.forEach((element) => {
+      element.style.height = element.scrollHeight + 'px';
+    });
   }
 
   showAnswers(answers, correctAnswers) {
@@ -170,7 +188,7 @@ class UI {
     for (i = 0; i < answers.length; i++) {
       div = document.getElementById(`question_${i + 1}`);
 
-      answerEls = div.childNodes[1].querySelectorAll('.answer');
+      answerEls = div.childNodes[2].querySelectorAll('.answer');
 
       id = answers[i];
 
@@ -184,7 +202,7 @@ class UI {
     for (i = 0; i < correctAnswers.length; i++) {
       div = document.getElementById(`question_${i + 1}`);
 
-      answerEls = div.childNodes[1].querySelectorAll('.answer');
+      answerEls = div.childNodes[2].querySelectorAll('.answer');
 
       id = correctAnswers[i];
 

@@ -1,8 +1,7 @@
 import { client } from '../client.js';
 import { ui } from './ui.js';
 
-// const API_URL = 'https://quizisfun.tk/api/admin/questions';
-const API_URL = 'http://localhost:5600/api/admin/questions';
+const API_URL = 'https://quizisfun.tk/api/admin/questions';
 
 class Questions {
   constructor() {
@@ -191,8 +190,6 @@ class App {
   }
 
   async setQuestionStatus(e) {
-    e.stopPropagation();
-
     if (e.target.parentElement.classList.contains('form-switch')) {
       const checkbox = e.target.parentElement.childNodes[0];
       const label = e.target.parentElement.childNodes[1];
@@ -222,6 +219,8 @@ class App {
         this.loading.style.display = 'block';
       }
     }
+
+    e.stopPropagation();
   }
 
   async showEditQuestion(e) {
@@ -325,4 +324,4 @@ loading.style.display = 'block';
 setTimeout(() => {
   const app = new App();
   app.loadEvents();
-}, 100);
+}, 2000);
