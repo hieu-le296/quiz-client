@@ -199,70 +199,77 @@ class UI {
     // Clear any previous questions
     this.clearScreen();
 
-    questions.forEach((question, counter) => {
-      // Create a box
-      const box = document.createElement('div');
-      box.className = 'box mt-3';
-
-      const box_body = document.createElement('div');
-      box_body.className = 'box-body';
-
-      // Create enable switch to toggle question visible to user
-      const enableQuiz = document.createElement('div');
-      enableQuiz.className = 'form-check form-switch float-end';
-      enableQuiz.dataset.id = question.questionID;
-
-      const checkbox = document.createElement('input');
-      checkbox.setAttribute('type', 'checkbox');
-      checkbox.id = `question_${counter + 1}`;
-      checkbox.className = 'form-check-input';
-
-      const labelCheckbox = document.createElement('label');
-      labelCheckbox.className = 'form-check-label';
-      labelCheckbox.htmlFor = `question_${counter + 1}`;
-
-      if (question.isEnabled == 1) {
-        checkbox.checked = true;
-        checkbox.value = 1;
-        labelCheckbox.textContent = 'Enabled';
-      } else {
-        checkbox.checked = false;
-        checkbox.value = 0;
-        labelCheckbox.textContent = 'Disabled';
+    if (questions.length == 0) {
+      this.showNoQuestionMessage();
+    } else {
+      const message = document.getElementById('no-question');
+      if (message) {
+        message.remove();
       }
+      questions.forEach((question, counter) => {
+        // Create a box
+        const box = document.createElement('div');
+        box.className = 'box mt-3';
 
-      enableQuiz.appendChild(checkbox);
-      enableQuiz.appendChild(labelCheckbox);
+        const box_body = document.createElement('div');
+        box_body.className = 'box-body';
 
-      // Create title
-      const title = document.createElement('h2');
-      title.className = 'box-title';
-      title.textContent = `${question.title}`;
+        // Create enable switch to toggle question visible to user
+        const enableQuiz = document.createElement('div');
+        enableQuiz.className = 'form-check form-switch float-end';
+        enableQuiz.dataset.id = question.questionID;
 
-      // // Create ul
-      const ul = document.createElement('ul');
-      ul.className = 'list-group list-group-horizontal';
-      let options = '';
+        const checkbox = document.createElement('input');
+        checkbox.setAttribute('type', 'checkbox');
+        checkbox.id = `question_${counter + 1}`;
+        checkbox.className = 'form-check-input';
 
-      question.options.forEach((option, index) => {
-        options = `
+        const labelCheckbox = document.createElement('label');
+        labelCheckbox.className = 'form-check-label';
+        labelCheckbox.htmlFor = `question_${counter + 1}`;
+
+        if (question.isEnabled == 1) {
+          checkbox.checked = true;
+          checkbox.value = 1;
+          labelCheckbox.textContent = 'Enabled';
+        } else {
+          checkbox.checked = false;
+          checkbox.value = 0;
+          labelCheckbox.textContent = 'Disabled';
+        }
+
+        enableQuiz.appendChild(checkbox);
+        enableQuiz.appendChild(labelCheckbox);
+
+        // Create title
+        const title = document.createElement('h2');
+        title.className = 'box-title';
+        title.textContent = `${question.title}`;
+
+        // // Create ul
+        const ul = document.createElement('ul');
+        ul.className = 'list-group list-group-horizontal';
+        let options = '';
+
+        question.options.forEach((option, index) => {
+          options = `
         <li class="list-group-item">
           <input type="radio" name="answer_${counter + 1}" class="answer_${
-          counter + 1
-        }_${index + 1}">
+            counter + 1
+          }_${index + 1}">
           <label class="option-content" for="r${counter + 1}_${
-          index + 1
-        }">${option}</label>
+            index + 1
+          }">${option}</label>
         </li>
         `;
-        ul.innerHTML += options;
-      });
+          ul.innerHTML += options;
+        });
 
-      // Create group icons
-      const group_icon = document.createElement('div');
-      group_icon.className = 'float-end';
+        // Create group icons
+        const group_icon = document.createElement('div');
+        group_icon.className = 'float-end';
 
-      let a_tags = `
+        let a_tags = `
         <a href="#" class="card-link edit" data-id="${question.questionID}">
             <em class="far fa-edit"></em>
         </a>
@@ -271,31 +278,58 @@ class UI {
         </a>
       `;
 
-      group_icon.innerHTML += a_tags;
+        group_icon.innerHTML += a_tags;
 
-      // Add title, enable question,  options to box_body
-      box_body.appendChild(enableQuiz);
-      box_body.appendChild(title);
-      box_body.appendChild(ul);
-      box_body.appendChild(group_icon);
+        // Add title, enable question,  options to box_body
+        box_body.appendChild(enableQuiz);
+        box_body.appendChild(title);
+        box_body.appendChild(ul);
+        box_body.appendChild(group_icon);
 
-      // Add box_body to the parent box
-      box.appendChild(box_body);
+        // Add box_body to the parent box
+        box.appendChild(box_body);
 
-      // Add box to quiz screen
-      this.quiz.appendChild(box);
+        // Add box to quiz screen
+        this.quiz.appendChild(box);
 
-      // Add option IDs to options and check the answer from option number
-      question.optionIDs.forEach((val, index) => {
-        const radioBtn = document.querySelector(
-          `.answer_${counter + 1}_${index + 1}`
-        );
+        // Add option IDs to options and check the answer from option number
+        question.optionIDs.forEach((val, index) => {
+          const radioBtn = document.querySelector(
+            `.answer_${counter + 1}_${index + 1}`
+          );
 
-        if (question.optionNumber == index + 1) {
-          radioBtn.checked = true;
-        }
+          if (question.optionNumber == index + 1) {
+            radioBtn.checked = true;
+          }
+        });
       });
-    });
+
+      if (this.quiz.childElementCount >= 2) {
+        this.addDeleteAllButton();
+      }
+    }
+  }
+
+  showNoQuestionMessage() {
+    // Create title
+    const title = document.createElement('h5');
+    title.className = 'text-center';
+    title.id = 'no-question';
+    title.style.color = '#8d55c2';
+    title.innerHTML =
+      'There are no questions here. Add a question now &#x1F61C';
+
+    const admin_div = document.querySelector('.box-body-admin');
+    admin_div.appendChild(title);
+  }
+
+  addDeleteAllButton() {
+    // Add a delete All Button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.id = 'deleteBtn';
+    deleteBtn.className = 'mt-3 btn-danger';
+    deleteBtn.innerHTML = '<i class="far fa-trash-alt"></i>';
+    this.quiz.appendChild(deleteBtn);
   }
 
   clearScreen() {

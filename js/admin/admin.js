@@ -1,7 +1,8 @@
 import { client } from '../client.js';
 import { ui } from './ui.js';
 
-const API_URL = 'https://quizisfun.tk/api/admin/questions';
+// const API_URL = 'https://quizisfun.tk/api/admin/questions';
+const API_URL = 'http://localhost:5600/api/admin/questions';
 
 class Questions {
   constructor() {
@@ -29,6 +30,7 @@ class App {
     this.addBtn = document.querySelector('#addBtn');
     this.createBtn = document.querySelector('#create');
     this.updateBtn = document.querySelector('#update');
+
     // Get the <span> element that closes the modal
     this.span = document.getElementsByClassName('close')[0];
 
@@ -61,6 +63,11 @@ class App {
     document
       .querySelector('#quiz')
       .addEventListener('click', (e) => this.deleteQuestionByIcon(e));
+
+    // Delete all questions
+    document
+      .querySelector('#quiz')
+      .addEventListener('click', (e) => this.deleteAllQuestions(e));
 
     this.createBtn.addEventListener('click', () => this.addQuestion());
 
@@ -150,14 +157,14 @@ class App {
   }
 
   async addQuestion() {
-    const title = document.querySelector('#title').value;
+    const title = document.querySelector('#title').value.trim();
 
     const optionNodes = document.querySelectorAll('.options');
 
     const options = [];
 
     optionNodes.forEach((node) => {
-      options.push(node.value);
+      options.push(node.value.trim());
     });
 
     const optionNumber = document.querySelector('input[name="answer"]:checked')
@@ -240,7 +247,7 @@ class App {
   }
 
   async updateQuestion() {
-    const title = document.querySelector('#title').value;
+    const title = document.querySelector('#title').value.trim();
 
     const optionNodes = document.querySelectorAll('.options');
 
@@ -248,7 +255,7 @@ class App {
     const optionIDs = [];
 
     optionNodes.forEach((node) => {
-      options.push(node.value);
+      options.push(node.value.trim());
       optionIDs.push(node.id);
     });
 
@@ -280,7 +287,25 @@ class App {
         try {
           const result = await client.delete(`${API_URL}/${id}`);
           if (result.success) {
-            ui.showAlert(result.message, 'alert alert-success');
+            ui.showAlert(result.message, 'alert alert-danger');
+            new Questions();
+          }
+        } catch (error) {
+          ui.showAlert('Could not connect to server', 'alert alert-danger');
+          this.loading.style.display = 'block';
+        }
+      }
+    }
+    e.stopPropagation();
+  }
+
+  async deleteAllQuestions(e) {
+    if (e.target.parentElement.id == 'deleteBtn') {
+      if (confirm('Are you sure you want to delete all questions?')) {
+        try {
+          const result = await client.delete(`${API_URL}`);
+          if (result.success) {
+            ui.showAlert(result.message, 'alert alert-danger');
             new Questions();
           }
         } catch (error) {
@@ -300,4 +325,4 @@ loading.style.display = 'block';
 setTimeout(() => {
   const app = new App();
   app.loadEvents();
-}, 2000);
+}, 100);

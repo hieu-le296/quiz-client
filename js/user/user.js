@@ -2,7 +2,8 @@ import { client } from '../client.js';
 import { ui } from './ui.js';
 
 // Virtual Server to test API
-const API_URL = 'https://quizisfun.tk/api/questions';
+// const API_URL = 'https://quizisfun.tk/api/questions';
+const API_URL = 'http://localhost:5600/api/questions';
 
 const quiz = document.getElementById('quiz');
 const nextBtn = document.getElementById('next');
@@ -30,6 +31,12 @@ const app = async () => {
       nextBtn.addEventListener('click', () => goNextQuestion(data.questions));
 
       prevBtn.addEventListener('click', () => goPrevQuestion(data.questions));
+
+      // If the quiz only have 1 question
+      const submitBtn = document.querySelector('#submit');
+      if (submitBtn) {
+        submitBtn.addEventListener('click', () => submitQuiz(data.questions));
+      }
     } else {
       console.log('Something went wrong');
     }
