@@ -10,8 +10,8 @@ class Questions {
       .get(`${API_URL}`)
       .then((data) => ui.showAllQuestions(data.questions))
       .catch((err) => {
-        const title = document.querySelector('.box-title');
-        title.textContent = 'Could not connect to server';
+        const title = document.querySelector('.box-title-admin');
+        title.textContent = 'Could not connect to server!';
         title.style.color = 'red';
         this.loading.style.display = 'block';
       });
@@ -109,10 +109,12 @@ class App {
 
   handleEventOnModal(e, type) {
     if (e.target.parentElement.classList.contains('add-option')) {
+      e.preventDefault();
       this.addOptions(type);
     }
 
     if (e.target.parentElement.classList.contains('delete')) {
+      e.preventDefault();
       this.removeOptions(e, type);
     }
 
@@ -130,6 +132,7 @@ class App {
   }
 
   async removeOptions(e, type) {
+    e.preventDefault();
     if (type === 'add') {
       ui.removeOption(e.target.parentElement.parentElement);
       this.numberOfOptions--;
@@ -142,7 +145,7 @@ class App {
         try {
           const result = await client.delete(`${API_URL}/options/${optionID}`);
 
-          ui.showModalAlert(result.message, 'alert alert-success');
+          ui.showModalAlert(result.message, 'alert alert-danger');
           ui.removeOption(e.target.parentElement.parentElement);
         } catch (error) {
           ui.showModalAlert(
@@ -178,13 +181,10 @@ class App {
         this.closeModal();
         ui.showAlert(addQuestion.message, 'mt-3 alert alert-success');
       } else {
-        ui.showModalAlert(addQuestion.message, 'mt-3 alert alert-danger');
+        ui.showModalAlert(addQuestion.message, 'alert alert-warning');
       }
     } catch (error) {
-      ui.showModalAlert(
-        'Could not connect to server!',
-        'mt-3 alert alert-danger'
-      );
+      ui.showModalAlert('Could not connect to server!', 'alert alert-danger');
       this.loading.style.display = 'block';
     }
   }
@@ -197,7 +197,6 @@ class App {
       if (checkbox.value == 0) {
         checkbox.value = 1;
         label.textContent = 'Enabled';
-        // new Questions();
       } else if (checkbox.value == 1) {
         checkbox.checkbox = false;
         checkbox.value = 0;
@@ -212,9 +211,8 @@ class App {
 
       try {
         await client.put(`${API_URL}/status/${id}`, obj);
-        new Questions();
       } catch (error) {
-        ui.showAlert('Could not connect to server', 'alert alert-danger');
+        ui.showAlert('Could not connect to server!', 'mt-3 alert alert-danger');
         this.closeModal();
         this.loading.style.display = 'block';
       }
@@ -225,6 +223,7 @@ class App {
 
   async showEditQuestion(e) {
     if (e.target.parentElement.classList.contains('edit')) {
+      e.preventDefault();
       const id = parseInt(e.target.parentElement.dataset.id);
       const data = await client.get(`${API_URL}/${id}`);
 
@@ -242,7 +241,6 @@ class App {
           this.handleEventOnModal(event, 'edit')
         );
     }
-    e.stopPropagation();
   }
 
   async updateQuestion() {
@@ -258,44 +256,61 @@ class App {
       optionIDs.push(node.id);
     });
 
-    const optionNumber = document.querySelector('input[name="answer"]:checked')
-      .value;
+    const optionNumbers = document.querySelectorAll('input[name="answer"]');
+    let optionNumber = 0;
 
-    const question = { title, options, optionIDs, optionNumber };
+    optionNumbers.forEach((el) => {
+      if (el.checked == true) optionNumber = el.value;
+    });
 
-    const id = document.querySelector('#id').value;
+    if (optionNumber == 0)
+      ui.showModalAlert(
+        'Please select a correct answer',
+        'alert alert-warning'
+      );
+    else {
+      const question = { title, options, optionIDs, optionNumber };
 
-    try {
-      const result = await client.put(`${API_URL}/${id}`, question);
+      const id = document.querySelector('#id').value;
 
-      ui.showAlert(result.message, 'alert alert-success');
-      this.closeModal();
-      new Questions();
-    } catch (error) {
-      ui.showAlert('Could not connect to server', 'alert alert-danger');
-      this.closeModal();
-      this.loading.style.display = 'block';
+      try {
+        const result = await client.put(`${API_URL}/${id}`, question);
+
+        if (result.success) {
+          ui.showAlert(result.message, 'mt-3 alert alert-success');
+          this.closeModal();
+          new Questions();
+        } else ui.showModalAlert(result.message, 'alert alert-warning');
+      } catch (error) {
+        ui.showAlert('Could not connect to server!', 'mt-3 alert alert-danger');
+        this.closeModal();
+        this.loading.style.display = 'block';
+      }
     }
   }
 
   async deleteQuestionByIcon(e) {
     if (e.target.parentElement.classList.contains('delete')) {
+      e.preventDefault();
+
       // Get the id of the question
       const id = parseInt(e.target.parentElement.dataset.id);
       if (confirm('Are you sure you want to delete this question?')) {
         try {
           const result = await client.delete(`${API_URL}/${id}`);
           if (result.success) {
-            ui.showAlert(result.message, 'alert alert-danger');
+            ui.showAlert(result.message, 'mt-3 alert alert-danger');
             new Questions();
           }
         } catch (error) {
-          ui.showAlert('Could not connect to server', 'alert alert-danger');
+          ui.showAlert(
+            'Could not connect to server!',
+            'mt-3 alert alert-danger'
+          );
           this.loading.style.display = 'block';
         }
       }
     }
-    e.stopPropagation();
   }
 
   async deleteAllQuestions(e) {
@@ -304,11 +319,14 @@ class App {
         try {
           const result = await client.delete(`${API_URL}`);
           if (result.success) {
-            ui.showAlert(result.message, 'alert alert-danger');
+            ui.showAlert(result.message, 'mt-3 alert alert-danger');
             new Questions();
           }
         } catch (error) {
-          ui.showAlert('Could not connect to server', 'alert alert-danger');
+          ui.showAlert(
+            'Could not connect to server!',
+            'mt-3 alert alert-danger'
+          );
           this.loading.style.display = 'block';
         }
       }
