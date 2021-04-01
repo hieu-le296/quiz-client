@@ -126,7 +126,7 @@ class UI {
     this.clearDiv();
     this.show.innerHTML = `
     <div>
-        <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Back to landing page" href="./index.html"><em class="fas fa-arrow-left"></em></a>
+        <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Back to landing page" href="../../index.html"><em class="fas fa-arrow-left"></em></a>
     </div>
     <h2 class="text-center ${className}">${message}</h2>
     `;

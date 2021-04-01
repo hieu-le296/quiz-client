@@ -1,4 +1,4 @@
-import { client } from '../client.js';
+import { client } from '../../js/client.js';
 import { ui } from './ui.js';
 
 const API_URL = 'https://quizisfun.tk/api/admin/questions';

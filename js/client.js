@@ -14,7 +14,7 @@ class Client {
   async post(url, inputData) {
     const res = await fetch(url, {
       method: 'POST',
-      header: { 'Content-type': 'application/json' },
+      headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(inputData),
     });
 
